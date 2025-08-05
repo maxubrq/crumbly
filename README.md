@@ -58,6 +58,55 @@ flowchart LR
 
 ***Narative***: The browser collects cookies, encrypts them with WebCrypto, and pushes them to your GitHub Gist. On another browser, the same process runs in reverse — pull, decrypt, restore.
 
+### 2. Encryption & Key Derivation Flow
+
+```mermaid
+flowchart TD
+    U[User Pass-Phrase] --> KDF[Key Derivation]
+    KDF --> KEY[AES-256-GCM Key]
+    COOKIES[Cookie Dump ] --> ENCRYPT[Encrypt with AES-GCM]
+    ENCRYPT --> BLOB[Encrypted Blob ]
+
+```
+
+***Narative***: Crumbly derives an AES key from your pass-phrase. Cookies are dumped, encrypted with that key using AES-GCM, and Base64-encoded before upload. The key is **never stored**.
+
+### 3. GitHub Sync Mechanism (Gist Push/Pull)
+
+```mermaid
+sequenceDiagram
+    participant UI as Crumbly UI
+    participant SW as Service Worker
+    participant GH as GitHub Gist API
+
+    UI->>SW: Sync Now
+    SW->>GH: GET /gists/:id (If-None-Match: ETag)
+    alt Not modified
+        SW-->>UI: No changes
+    else New version
+        GH-->>SW: Encrypted blob
+        SW->>SW: Decrypt, Restore cookies
+        SW->>GH: PATCH /gists/:id (new encrypted blob)
+    end
+
+```
+
+***Narative***: The service worker pings GitHub with the last known ETag. If unchanged, it skips. If changed, it pulls and restores. On push, it uses PATCH with optimistic locking (If-Match).
+
+#### 4. QR Handshake Pairing (Magic Feature)
+
+```mermaid
+flowchart TD
+    A[Device A] -->|Export Public Key + Snapshot| QR[QR Code]
+
+    QR --> B[Device B]
+    B -->|Scan + Decrypt Snapshot| RESTORE[Restore cookies locally]
+    RESTORE -->|Schedule normal sync| SYNC
+
+```
+
+***Narative***: Your main device generates a short-lived encrypted snapshot + public key, encodes it into a QR code. The new device scans it, decrypts it (with pass-phrase), and boots up fully synced.
+
 ---
 
 ## 🚀 Getting Started
