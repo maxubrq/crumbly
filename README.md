@@ -174,6 +174,30 @@ Load `dist/` as an unpacked extension:
 Want to contribute? See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and open a PR!
 
 ---
+## ⚠️ Disclaimer & Security Notice
+
+Crumbly is designed with **strong encryption and zero-trust architecture**, but **cookies are still sensitive data**. Please keep the following in mind:
+
+### 🔒 Your passphrase is your only line of defense
+- Your cookies are encrypted with a key derived from your passphrase using **AES-256-GCM** and **PBKDF2 / Argon2**.
+- **We never store or transmit your passphrase or encryption key** — only you know it.
+- ⚠️ **If someone gains access to your passphrase, they can decrypt your cookies** — treat it like a password to your browser session.
+
+### 🌐 Session reuse may be blocked by some websites
+- Not all websites allow session reuse across devices or browsers.  
+  Crumbly **copies the cookie**, but some sites may:
+  - Bind sessions to device fingerprints or IPs
+  - Invalidate sessions when they detect reuse
+  - Require re-authentication regardless of the cookie
+
+### 🧪 Best effort, not bulletproof
+- Crumbly **does not bypass security** — it simply syncs your own session data.
+- It is not a tool for impersonation, scraping, or automated login to accounts you don't own.
+- We recommend **logging out from all sessions** before switching GitHub tokens or sharing devices.
+
+> TL;DR: **Treat your passphrase like a password.**  
+> Crumbly helps you sync your session — it doesn’t guarantee sites will let that session work.
+---
 
 ## 📄 License
 
