@@ -34,32 +34,29 @@ Crumbly is a **browser-agnostic extension** that lets you seamlessly sync your c
 All keys are derived **client-side**. We **never see anything**.  
 You own the sync. Crumbly just makes it ✨frictionless.
 
-<details>
-   <sumary>1. High-level system flow</sumary>
+### 1. High-level system flow
+```mermaid
+flowchart LR
+ subgraph Browser [User's Browser]
+     C[Cookie Store]
+     UI[Crumbly UI]
+     BG[Service Worker]
+     ENC[Encrypt & Serialize]
+     DEC[Decrypt & Restore]
+ end
 
-   ```mermaid
-   flowchart LR
-    subgraph Browser [User's Browser]
-        C[Cookie Store]
-        UI[Crumbly UI (Popup/Options)]
-        BG[Service Worker]
-        ENC[Encrypt & Serialize]
-        DEC[Decrypt & Restore]
-    end
+ subgraph GitHub [GitHub Gist]
+     G[Gist File]
+     V[Gist Version History]
+ end
 
-    subgraph GitHub [GitHub Gist (User-owned)]
-        G[Gist File (cookies.json.enc)]
-        V[Gist Version History]
-    end
+ C -->|dump| ENC -->|push encrypted| G
+ UI -->|trigger sync| BG
+ G -->|pull & decrypt| DEC -->|restore| C
+ G --> V
+```
 
-    C -->|dump| ENC -->|push encrypted| G
-    UI -->|trigger sync| BG
-    G -->|pull & decrypt| DEC -->|restore| C
-    G --> V
-   ```
-
-   *Narative*: The browser collects cookies, encrypts them with WebCrypto, and pushes them to your GitHub Gist. On another browser, the same process runs in reverse — pull, decrypt, restore.
-</details>
+***Narative***: The browser collects cookies, encrypts them with WebCrypto, and pushes them to your GitHub Gist. On another browser, the same process runs in reverse — pull, decrypt, restore.
 
 ---
 
