@@ -8,8 +8,10 @@ import { saveMeta, loadMeta } from "../storage/storageservice";
 
 const GIST_SCOPE = "gist";
 const CLIENT_ID = import.meta.env.VITE_GH_CLIENT_ID; // ← set in .env
-const REDIRECT = chrome.identity.getRedirectURL("oauth2");
-
+const REDIRECT =
+  (globalThis.chrome?.identity?.getRedirectURL?.('oauth2')) // real browser
+  ?? 'http://localhost/oauth2'                              // test fallback
+  
 /** Pop-up GitHub OAuth window → returns token, or throws on cancel. */
 export async function acquireTokenInteractive(): Promise<string> {
   const url =
@@ -54,6 +56,7 @@ const API = "https://api.github.com";
 export interface GistMeta {
   id: string;
   etag: string | null;
+  lastHash?: string;
 }
 
 export async function createOrGetGist(token: string): Promise<GistMeta> {

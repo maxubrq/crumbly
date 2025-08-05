@@ -4,6 +4,7 @@
 export interface GistMeta {
   id: string;
   etag: string | null;
+  lastHash?: string;
 }
 
 export interface UserPrefs {
