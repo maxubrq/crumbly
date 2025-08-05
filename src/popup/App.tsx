@@ -6,6 +6,8 @@
 // import { useStorage } from "./hooks/useStorage";
 // import './App.css';
 
+import { Button } from "@/components/ui/button";
+
 // export default function App() {
 //   const [syncing, setSyncing] = useState(false);
 //   const [lastSync, setLastSync] = useStorage<number>("crumbly:lastSync", 0);
@@ -55,6 +57,7 @@ export default function App() {
       <h1 className="font-bold text-lg">Crumbly</h1>
       <p className="mt-4">This is a placeholder for the Crumbly extension.</p>
       <p>More features coming soon!</p>
+      <Button>This is shadbutton</Button>
     </div>
   );
 }
