@@ -1,0 +1,111 @@
+name: Build & Publish Crumbly
+
+on:
+  push:
+    branches: [ main ]
+    tags:     [ 'v*' ]        # v1.2.3 → full release & store publish
+  workflow_dispatch:          # manual trigger
+
+permissions:
+  contents: write             # create release
+  id-token: write             # required by web-store signers
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: ⬇️  Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # so `git describe` works on tag
+
+      - name: 🏗️ Setup PNPM + Node
+        uses: pnpm/action-setup@v3
+        with:
+          node-version: 20
+          pnpm-version: 9
+
+      - name: 📦 Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: ✅ Lint + Unit tests
+        run: pnpm test -- --run
+
+      - name: 🏗️ Build extension
+        run: pnpm build          # produces dist/ via @crxjs/vite-plugin
+
+      # ─── Chromium bundle (ZIP + CRX) ────────────────────────────────
+      - name: 📦 Pack CRX
+        id: crx
+        uses: LittleHelicase/crx3-action@v2
+        with:
+          src: dist
+          crx-key: |
+            -----BEGIN PRIVATE KEY-----
+            # paste a *development* RSA key or let the action generate
+            -----END PRIVATE KEY-----
+
+      - name: 📦 Zip Chromium bundle
+        run: cd dist && zip -r ../crumbly-chrome-zip.zip .
+
+      # ─── Firefox bundle (unsigned XPI) ──────────────────────────────
+      - name: 📦 Build XPI
+        run: |
+          pnpm dlx web-ext build \
+            --source-dir=dist \
+            --artifacts-dir=web-ext-artifacts \
+            --ignore-files '/**/*.map'
+          mv web-ext-artifacts/*.xpi crumbly-firefox.xpi
+
+      # ─── Upload artifacts on every push ────────────────────────────
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crumbly-builds
+          path: |
+            crumbly-chrome-zip.zip
+            ${{ steps.crx.outputs.crx-path }}
+            crumbly-firefox.xpi
+          if-no-files-found: error
+
+      # ─── Publish on version tags only ──────────────────────────────
+      - name: ⏩ Skip publish if not tag
+        if: ${{ github.ref_type != 'tag' }}
+        run: echo "Not a tag, finished build pipeline."
+
+      # 1️⃣  Create GitHub Release
+      - name: 📑 Create GitHub Release
+        if:   ${{ github.ref_type == 'tag' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+          files: |
+            crumbly-chrome-zip.zip
+            ${{ steps.crx.outputs.crx-path }}
+            crumbly-firefox.xpi
+
+      # 2️⃣  Publish to Chrome Web Store
+      - name: 🚀 Publish to Chrome Web Store
+        if:   ${{ github.ref_type == 'tag' }}
+        uses: Klemensas/chrome-extension-upload-action@v2
+        with:
+          extension-id:     ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id:        ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret:    ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token:    ${{ secrets.CHROME_REFRESH_TOKEN }}
+          zip-path:         crumbly-chrome-zip.zip
+          publish:          true
+
+      # 3️⃣  Sign & Publish to Firefox Add-ons (AMO)
+      - name: 🚀 Sign & Publish to AMO
+        if:   ${{ github.ref_type == 'tag' }}
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: sign
+          source: dist
+          apiKey:    ${{ secrets.AMO_JWT_ISSUER }}
+          apiSecret: ${{ secrets.AMO_JWT_SECRET }}
+          channel:   listed
