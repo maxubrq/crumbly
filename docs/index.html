@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍪 Crumbly – Secure, Magic Cookie Sync</title>
+    <meta name="description" content="Sync your browser cookies across devices and browsers — securely, magically, and without a middleman.">
+    
+    <!-- Pico CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+        }
+
+        .hero {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            padding: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin: 2rem 0;
+        }
+
+        .comparison-table table {
+            margin: 0;
+        }
+
+        .comparison-table th {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .comparison-table td {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .security-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .magic-features {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tech-item {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .cta-section {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            color: var(--primary);
+        }
+
+        .warning-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box h3 {
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+
+        .quote {
+            font-style: italic;
+            text-align: center;
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="logo float-animation" data-aos="zoom-in">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-ZUIxp2DbX2jQPx4JThHQIR1mGzeyR7.png" alt="Crumbly Logo">
+            </div>
+            <h1 data-aos="fade-up" data-aos-delay="200">🍪 Crumbly</h1>
+            <p data-aos="fade-up" data-aos-delay="400"><em>Sync your cookies. Securely. Magically.</em></p>
+            <p data-aos="fade-up" data-aos-delay="600">Sync your browser cookies across devices and browsers — securely, magically, and without a middleman.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Why Crumbly Section -->
+        <section data-aos="fade-up">
+            <h2>✨ Why Crumbly?</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🔐 Privacy-first</th>
+                            <th>🔄 Seamless Sync</th>
+                            <th>🪄 Feels like Magic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>End-to-end AES-GCM encryption</td>
+                            <td>Auto-pushes and pulls session cookies</td>
+                            <td>QR pairing, tab teleport, and context-aware profiles (coming soon)</td>
+                        </tr>
+                        <tr>
+                            <td>Zero-knowledge, zero backend</td>
+                            <td>Works across browsers & OSes</td>
+                            <td>Makes cookie sync fun & effortless</td>
+                        </tr>
+                        <tr>
+                            <td>Your GitHub, your data</td>
+                            <td>Manual or scheduled sync</td>
+                            <td>No login? No problem. Just scan a QR.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section data-aos="fade-up">
+            <h2>🧠 How It Works</h2>
+            <div class="step-card" data-aos="fade-right" data-aos-delay="100">
+                <span class="step-number">1</span>
+                <strong>You authorize Crumbly</strong> to access your GitHub account via OAuth (or manually paste a PAT).
+            </div>
+            <div class="step-card" data-aos="fade-right" data-aos-delay="200">
+                <span class="step-number">2</span>
+                <strong>Crumbly creates</strong> (or uses) a private Gist in your account.
+            </div>
+            <div class="step-card" data-aos="fade-right" data-aos-delay="300">
+                <span class="step-number">3</span>
+                <strong>Your cookies are:</strong>
+                <ul>
+                    <li>Dumped into structured JSON</li>
+                    <li>Encrypted with <strong>AES-256-GCM</strong></li>
+                    <li>Pushed to your private Gist</li>
+                </ul>
+            </div>
+            <div class="step-card" data-aos="fade-right" data-aos-delay="400">
+                <span class="step-number">4</span>
+                <strong>On another device/browser, Crumbly:</strong>
+                <ul>
+                    <li>Pulls the Gist</li>
+                    <li>Decrypts it using your pass-phrase</li>
+                    <li>Restores the cookies into your browser</li>
+                </ul>
+            </div>
+            <p data-aos="fade-up" data-aos-delay="500"><strong>All keys are derived client-side. We never see anything. You own the sync. Crumbly just makes it ✨frictionless.</strong></p>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section data-aos="fade-up">
+            <h2>🚀 Getting Started</h2>
+            <div class="feature-grid">
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="100">
+                    <h3>1. Install Crumbly</h3>
+                    <p>Coming soon to Chrome, Firefox, Edge, Safari</p>
+                </div>
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="200">
+                    <h3>2. Authorize GitHub</h3>
+                    <p>Or paste a token with <code>gist</code> scope</p>
+                </div>
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="300">
+                    <h3>3. Set a pass-phrase</h3>
+                    <p>To encrypt your session</p>
+                </div>
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="400">
+                    <h3>4. Click "💾 Sync now"</h3>
+                    <p>Or let Crumbly do it on a timer</p>
+                </div>
+                <div class="feature-card" data-aos="flip-left" data-aos-delay="500">
+                    <h3>5. Install on other device</h3>
+                    <p>Repeat, and your session <em>just works</em> 🪄</p>
+                </div>
+            </div>
+            
+            <div class="magic-features" data-aos="zoom-in">
+                <h3>🪄 Want to pair devices fast?</h3>
+                <p>Crumbly supports <strong>QR Handshake Pairing</strong> — no GitHub login needed on the second device.</p>
+            </div>
+        </section>
+
+        <!-- Security Section -->
+        <section data-aos="fade-up">
+            <h2>🛡️ Security at a Glance</h2>
+            <div class="feature-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Encryption</h3>
+                    <span class="security-badge">AES-256-GCM via native WebCrypto</span>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Key derivation</h3>
+                    <span class="security-badge">PBKDF2 (or Argon2, coming soon) from your pass-phrase</span>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <h3>At-rest storage</h3>
+                    <span class="security-badge">Gist contains encrypted blob only. Zero plaintext.</span>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <h3>No backend</h3>
+                    <span class="security-badge">Crumbly never transmits data to any Crumbly server.</span>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <h3>Your GitHub</h3>
+                    <span class="security-badge">Only your token, your Gist, your rules.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Magic Features Section -->
+        <section data-aos="fade-up">
+            <h2>🪄 Planned "Magic" Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card pulse-animation" data-aos="zoom-in" data-aos-delay="100">
+                    <h3>QR Handshake Pairing</h3>
+                    <p>Sync to a new device by scanning a QR — no GitHub login required</p>
+                </div>
+                <div class="feature-card pulse-animation" data-aos="zoom-in" data-aos-delay="200">
+                    <h3>Tab Teleport</h3>
+                    <p>Move active tabs from one browser to another, cookies and all</p>
+                </div>
+                <div class="feature-card pulse-animation" data-aos="zoom-in" data-aos-delay="300">
+                    <h3>Context-Aware Profiles</h3>
+                    <p>Automatically switch between cookie sets based on time, site, or device</p>
+                </div>
+                <div class="feature-card pulse-animation" data-aos="zoom-in" data-aos-delay="400">
+                    <h3>AI Tracker Cleaner</h3>
+                    <p>Suggest safe-to-delete cookies with one click</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section data-aos="fade-up">
+            <h2>🧩 Tech Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-item" data-aos="flip-up" data-aos-delay="100">WebExtension API (Manifest V3)</span>
+                <span class="tech-item" data-aos="flip-up" data-aos-delay="200">Vite + React + Tailwind</span>
+                <span class="tech-item" data-aos="flip-up" data-aos-delay="300">WebCrypto API for AES-GCM</span>
+                <span class="tech-item" data-aos="flip-up" data-aos-delay="400">GitHub Gist API (REST)</span>
+                <span class="tech-item" data-aos="flip-up" data-aos-delay="500">Cross-browser with MV3 & polyfill</span>
+            </div>
+        </section>
+
+        <!-- Developer Section -->
+        <section data-aos="fade-up">
+            <h2>🛠️ For Developers</h2>
+            <p>Clone and build:</p>
+            <pre><code>pnpm install
+pnpm dev         # for local preview
+pnpm build       # build MV3 dist/ for browser</code></pre>
+            <p>Load <code>dist/</code> as an unpacked extension:</p>
+            <ul>
+                <li><code>chrome://extensions</code></li>
+                <li><code>about:debugging</code></li>
+                <li><code>edge://extensions</code></li>
+            </ul>
+            <p>Want to contribute? See <code>CONTRIBUTING.md</code> and open a PR!</p>
+        </section>
+
+        <!-- Security Notice Section -->
+        <section data-aos="fade-up">
+            <h2>⚠️ Disclaimer & Security Notice</h2>
+            <p>Crumbly is designed with <strong>strong encryption and zero-trust architecture</strong>, but <strong>cookies are still sensitive data</strong>. Please keep the following in mind:</p>
+            
+            <div class="warning-box" data-aos="zoom-in">
+                <h3>🔒 Your passphrase is your only line of defense</h3>
+                <ul>
+                    <li>Your cookies are encrypted with a key derived from your passphrase using <strong>AES-256-GCM</strong> and <strong>PBKDF2 / Argon2</strong>.</li>
+                    <li><strong>We never store or transmit your passphrase or encryption key</strong> — only you know it.</li>
+                    <li>⚠️ <strong>If someone gains access to your passphrase, they can decrypt your cookies</strong> — treat it like a password to your browser session.</li>
+                </ul>
+            </div>
+
+            <div class="warning-box" data-aos="zoom-in" data-aos-delay="200">
+                <h3>🌐 Session reuse may be blocked by some websites</h3>
+                <ul>
+                    <li>Not all websites allow session reuse across devices or browsers.</li>
+                    <li>Crumbly <strong>copies the cookie</strong>, but some sites may:
+                        <ul>
+                            <li>Bind sessions to device fingerprints or IPs</li>
+                            <li>Invalidate sessions when they detect reuse</li>
+                            <li>Require re-authentication regardless of the cookie</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="warning-box" data-aos="zoom-in" data-aos-delay="400">
+                <h3>🧪 Best effort, not bulletproof</h3>
+                <ul>
+                    <li>Crumbly <strong>does not bypass security</strong> — it simply syncs your own session data.</li>
+                    <li>It is not a tool for impersonation, scraping, or automated login to accounts you don't own.</li>
+                    <li>We recommend <strong>logging out from all sessions</strong> before switching GitHub tokens or sharing devices.</li>
+                </ul>
+            </div>
+
+            <p><strong>TL;DR: Treat your passphrase like a password. Crumbly helps you sync your session — it doesn't guarantee sites will let that session work.</strong></p>
+        </section>
+
+        <!-- CTA Section -->
+        <div class="cta-section" data-aos="zoom-in">
+            <h2>Ready to sync your cookies magically? 🪄</h2>
+            <p>Join the waitlist and be the first to experience seamless cookie syncing</p>
+            <a href="#" class="cta-button">Get Early Access</a>
+            <a href="#" class="cta-button">View on GitHub</a>
+        </div>
+
+        <!-- License Section -->
+        <section data-aos="fade-up">
+            <h2>📄 License</h2>
+            <p>MIT License — feel free to fork, extend, remix.</p>
+            <p>If you build something magical with Crumbly, we'd love to hear about it!</p>
+        </section>
+
+        <!-- Quote Section -->
+        <div class="quote" data-aos="fade-up">
+            <p>"Crumbly syncs your cookies, not your soul."</p>
+            <small>— probably someone on Hacker News</small>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container" style="text-align: center; padding: 2rem 0; color: #6b7280;">
+        <p>Made with 🍪 and ❤️ for secure cookie syncing</p>
+    </footer>
+
+    <!-- AOS Animation Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>
