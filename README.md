@@ -4,7 +4,7 @@
 
 
 <p align="center">
-  <img src="./ogo.png" alt="Crumbly Logo" width="200"/>
+  <img src="./logo.png" alt="Crumbly Logo" width="200"/>
 </p>
 
 <h1 align="center">Crumbly</h1>
