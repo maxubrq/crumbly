@@ -2,6 +2,10 @@
 
 > Sync your browser cookies across devices and browsers — securely, magically, and without a middleman.
 
+
+<p align="center">
+   ![logo](./logo.png)
+</p>
 ---
 
 Crumbly is a **browser-agnostic extension** that lets you seamlessly sync your cookies between Chrome, Firefox, Edge, and Safari using your own [GitHub Gist](https://gist.github.com). Your session data never touches third-party servers. It’s **encrypted, peerless, and works like magic.**
