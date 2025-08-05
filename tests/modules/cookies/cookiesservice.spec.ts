@@ -2,7 +2,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import {
   dumpCookies,
   restoreCookies,
-} from "../src/modules/cookies/cookiesservice";
+} from "../../../src/modules/cookies/cookiesservice";
 
 const mockCookies: Partial<chrome.cookies.Cookie>[] = [
   {
