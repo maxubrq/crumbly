@@ -29,7 +29,8 @@ export default defineManifest({
     '48': 'icons/icon48.png',
     '128': 'icons/icon128.png'
   },
-  content_security_policy: {
-    extension_pages: "default-src 'self'; connect-src https://api.github.com"
-  }
+content_security_policy: {
+  extension_pages:
+    "default-src 'self'; connect-src https://api.github.com wss://*.app.github.dev"
+}
 })
