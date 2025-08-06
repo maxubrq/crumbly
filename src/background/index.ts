@@ -3,18 +3,22 @@ import { encryptJSON } from "@/modules/crypto";
 import { shouldSyncCookie } from "@/modules/filter";
 import type { Settings } from "@/modules/types";
 import type { SyncMessage } from "@/modules/syncStates";
-import browser from "webextension-polyfill";
+import { runtime } from '@/lib/runtime';
 
 async function dumpCookiesFiltered(settings: Settings) {
-  const all = await browser.cookies.getAll({});
-  const filtered = all.filter(c => shouldSyncCookie(c, settings.policies, settings.cookiePolicies));
+  const all = await runtime.cookies.getAll({});
+  const filtered = all.filter(c => shouldSyncCookie(c as any, settings.policies, settings.cookiePolicies));
   return filtered;
 }
 
+export async function ensureCookiePermission() {
+  const have = await runtime.permissions.contains({ permissions: ["cookies"] });
+  if (!have) await runtime.permissions.request({ permissions: ["cookies"] });
+}
 
-browser.runtime.onMessage.addListener(async (msg: any) => {
+runtime.runtime.onMessage.addListener(async (msg: any) => {
   if (msg.type === "SYNC_NOW") {
-    const settings: Settings = (await browser.storage.local.get("settings")).settings as any;
+    const settings: Settings = (await runtime.storage.local.get("settings")).settings as any;
     if (!settings.passphrase) return console.error("Missing passphrase");
 
     const dump = await dumpCookiesFiltered(settings);
@@ -23,7 +27,7 @@ browser.runtime.onMessage.addListener(async (msg: any) => {
   }
 });
 
-chrome.runtime.onConnect.addListener(port => {
+runtime.runtime.onConnect.addListener(port => {
   if (port.name !== "sync") return;
 
   port.onMessage.addListener(async msg => {
@@ -35,6 +39,8 @@ chrome.runtime.onConnect.addListener(port => {
     let prevState: SyncMessage["stage"] | undefined;
     try {
       emit("dumping");
+      ensureCookiePermission();
+      // Ensure we have the cookies permission before proceeding
       let cookies = await browser.cookies.getAll({});
 
       prevState = "dumping";
