@@ -19,18 +19,25 @@ export default defineManifest({
     service_worker: 'src/background/index.ts',
     type: 'module'
   },
-  permissions: ['cookies', 'storage', 'identity'],
+  permissions: [
+    "cookies",
+    "storage",
+    "identity",
+    "alarms"
+  ],
   host_permissions: [
     'https://gist.github.com/*',
-    'https://api.github.com/*'
+    'https://api.github.com/*',
+    "https://localhost:5173/*",
+    "http://localhost:5173/*",
   ],
   icons: {
     '16': 'icons/icon16.png',
     '48': 'icons/icon48.png',
     '128': 'icons/icon128.png'
   },
-content_security_policy: {
-  extension_pages:
-    "default-src 'self'; connect-src https://api.github.com wss://*.app.github.dev"
-}
+  // content_security_policy: {
+  //   extension_pages:
+  //     "default-src 'self'; connect-src https://api.github.com wss://*.app.github.dev"
+  // }
 })

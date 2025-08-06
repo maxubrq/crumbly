@@ -1,26 +1,23 @@
-import { syncNow } from "../modules/sync/syncorchestrator";
+import { upsertGist } from "./gist";
+import { encryptJSON } from "@/modules/crypto";
+import { shouldSyncCookie } from "@/modules/filter";
+import type { Settings } from "@/modules/types";
+import browser from "webextension-polyfill";
 
-/* --- track live popup ports so we can broadcast --- */
-const ports = new Set<chrome.runtime.Port>();
-chrome.runtime.onConnect.addListener((port) => {
-  ports.add(port);
-  port.onDisconnect.addListener(() => ports.delete(port));
-});
-
-function broadcast(evt: string) {
-  for (const p of ports) p.postMessage({ evt });
+async function dumpCookiesFiltered(settings: Settings) {
+  const all = await browser.cookies.getAll({});
+  const filtered = all.filter(c => shouldSyncCookie(c, settings.policies));
+  return filtered;
 }
 
-chrome.runtime.onMessage.addListener((msg, _src, send) => {
-  if (msg.cmd === "syncNow") {
-    broadcast("sync:begin");
 
-    syncNow(msg.dir ?? "auto")
-      .then(() => send({ ok: true }))
-      .catch((err) => send({ ok: false, message: err.message }))
-      .finally(() => broadcast("sync:end"));
+browser.runtime.onMessage.addListener(async (msg: any) => {
+ if (msg.type === "SYNC_NOW") {
+    const settings: Settings = (await browser.storage.local.get("settings")).settings as any;
+    if (!settings.passphrase) return console.error("Missing passphrase");
 
-    return true; // ✅ we really are replying asynchronously
+    const dump = await dumpCookiesFiltered(settings);
+    const enc  = await encryptJSON(settings.passphrase, dump);
+    await upsertGist(enc, "crumbly.enc");
   }
-  // for every other cmd, return false (or omit return)
 });
