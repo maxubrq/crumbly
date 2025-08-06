@@ -32,11 +32,6 @@ export default function Dashboard({ settings }: { settings: Settings }) {
     /* --------- helpers -------- */
     const credsMissing = !githubToken || !passphrase;
 
-    const syncNow = () => {
-        if (credsMissing) return;                 // guard – UI already disabled
-        chrome.runtime.sendMessage({ type: "SYNC_NOW" });
-    };
-
     /* quick stats */
     const blockedDomainCount = policies.filter(p => p.mode === "block").length;
     const blockedCookieCount = cookiePolicies.filter(c => c.mode === "block").length;
@@ -44,13 +39,8 @@ export default function Dashboard({ settings }: { settings: Settings }) {
     const { stage, error, start } = useSyncPort();
     const syncing = stage !== "idle" && stage !== "done" && stage !== "error";
     const stageMap: Record<SyncStage, number> = {
-        idle: 0, dumping: 10, filtering: 30, encrypting: 60,
-        uploading: 90, done: 100, error: 100
-    };
-
-    const handleSync = () => {
-        if (credsMissing || syncing) return;
-        start();
+        idle: 0, dumping: 10, decrypting: 60, filtering: 30, encrypting: 60, applying: 80, downloading: 20,
+        uploading: 90, done: 100, error: 100,
     };
 
     /* --------- UI -------- */
@@ -115,6 +105,30 @@ export default function Dashboard({ settings }: { settings: Settings }) {
                 }
 
                 {
+                    stage === "downloading" && (
+                        <div className="text-sm text-muted-foreground">
+                            Downloading latest Gist data...📥
+                        </div>
+                    )
+                }
+
+                {
+                    stage === "decrypting" && (
+                        <div className="text-sm text-muted-foreground">
+                            Decrypting Gist data with your passphrase...🔓
+                        </div>
+                    )
+                }
+
+                {
+                    stage === "applying" && (
+                        <div className="text-sm text-muted-foreground">
+                            Applying cookies to browser storage...🍪
+                        </div>
+                    )
+                }
+
+                {
                     stage === "uploading" && (
                         <div className="text-sm text-muted-foreground">
                             Uploading to GitHub Gist...☁️
@@ -126,16 +140,17 @@ export default function Dashboard({ settings }: { settings: Settings }) {
                     <div className="text-sm text-destructive">{error}</div>
                 )}
 
+                <Button onClick={() => start("push")} disabled={credsMissing || syncing}>
+                    {syncing ? "Syncing…" : "Push → Gist"}
+                </Button>
+
                 <Button
-                    className="w-full"
-                    onClick={handleSync}
+                    variant="secondary"
+                    onClick={() => start("pull")}
                     disabled={credsMissing || syncing}
+                    className="w-full mt-2"
                 >
-                    {credsMissing
-                        ? "Finish setup to sync"
-                        : syncing
-                            ? "Syncing…"
-                            : "Sync Now"}
+                    Pull from Gist
                 </Button>
 
                 {syncing && <Progress value={stageMap[stage]} />}

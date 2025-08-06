@@ -47,7 +47,6 @@ export default function DomainTable() {
             setPolicies(settings?.policies ?? []);
 
             const cookies = await browser.cookies.getAll({});
-            alert(cookies.length + " cookies found");
             const uniq = new Set(cookies.map(c => canonical(c.domain)));
             setCookieDomains([...uniq].sort());
         })();

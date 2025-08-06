@@ -17,4 +17,5 @@ export interface Settings {
   passphrase?: string;
   githubToken?: string;
   gistId?: string;
+  etag?: string;                // for diffing
 }

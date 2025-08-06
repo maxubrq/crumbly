@@ -8,7 +8,8 @@ const DEFAULTS: Settings = {
     passphrase: undefined,
     githubToken: undefined,
     gistId: undefined,
-    cookiePolicies: []
+    cookiePolicies: [],
+    etag: undefined,
 };
 
 /**

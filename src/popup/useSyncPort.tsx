@@ -5,10 +5,10 @@ export function useSyncPort() {
   const [stage, setStage] = useState<SyncStage>("idle");
   const [error, setError] = useState<string | undefined>();
 
-  const start = useCallback(() => {
-    setStage("dumping");           // optimistic until first msg
+  const start = useCallback((direction: "push" | "pull") => {
+    setStage(direction === "push" ? "dumping" : "downloading");
     const port = chrome.runtime.connect({ name: "sync" });
-    port.postMessage({ cmd: "start-sync" });
+    port.postMessage({ cmd: direction === "push" ? "push-sync" : "pull-sync" });
 
     const listener = (msg: SyncMessage) => {
       setStage(msg.stage);

@@ -30,7 +30,7 @@ export default defineManifest({
     'https://gist.github.com/*',
     'https://api.github.com/*',
     "https://localhost:5173/*",
-    "http://localhost:5173/*",
+    "http://localhost:5173/*"
   ],
   icons: {
     '16': 'icons/icon16.png',

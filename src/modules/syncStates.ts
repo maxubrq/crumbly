@@ -1,6 +1,9 @@
 export type SyncStage =
   | "idle"
   | "dumping"
+  | "downloading" // new
+  | "decrypting"  // replaces "encrypting" on pull path
+  | "applying"    // new
   | "filtering"
   | "encrypting"
   | "uploading"
