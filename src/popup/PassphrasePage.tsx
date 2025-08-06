@@ -21,22 +21,24 @@ export default function PassphrasePage() {
     };
 
     return (
-        <Card className="w-80 p-4">
+        <Card className="w-96 p-4">
             <CardContent className="space-y-3">
-                <h1 className="text-lg font-semibold">GitHub Token</h1>
+                <h1 className="text-lg font-semibold">Step 2: Pass Phrase</h1>
                 <p className="text-sm text-muted-foreground">
-                    Create a PAT with the <code>gist</code> scope and paste it below.
+                    Enter your <strong>Pass phrase</strong> to encrypt your tokens. This is used to secure your GitHub tokens and is required for the extension to function properly.
+                    <br />
+                    <strong>Note:</strong> This passphrase is not stored on our servers and is only used locally in your browser.
                 </p>
 
                 <Input
                     type="password"
                     value={passphrase}
                     onChange={e => setPassphrase(e.target.value)}
-                    placeholder="ghp_********************************"
+                    placeholder="Enter your passphrase"
                 />
 
                 <Button className="w-full" onClick={save}>
-                    Save
+                    Save Pass Phrase
                 </Button>
             </CardContent>
         </Card>

@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import browser from "webextension-polyfill";
-import type { Settings, DomainPolicy } from "@/modules/types";
+import type { Settings, DomainPolicy, CookiePolicy } from "@/modules/types";
 
 /** Default object so you never deal with `undefined` keys */
 const DEFAULTS: Settings = {
     policies: [],
     passphrase: undefined,
     githubToken: undefined,
-    gistId: undefined
+    gistId: undefined,
+    cookiePolicies: []
 };
 
 /**
@@ -24,6 +25,8 @@ export function useSettings(): [
         setPassphrase: (pass: string) => Promise<void>;
         upsertPolicy: (p: DomainPolicy) => Promise<void>;
         removePolicy: (domain: string) => Promise<void>;
+        upsertCookie: (p: CookiePolicy) => Promise<void>;
+        removeCookie: (id: string) => Promise<void>;
     }
 ] {
     const [settings, setSettings] = useState<Settings>(DEFAULTS);
@@ -69,5 +72,13 @@ export function useSettings(): [
     const removePolicy = async (domain: string) =>
         save({ ...settings, policies: settings.policies.filter(p => p.domain !== domain) });
 
-    return [settings, ready, { setToken, setPassphrase, upsertPolicy, removePolicy }];
+    const upsertCookie = async (pol: CookiePolicy) => {
+        const others = settings.cookiePolicies.filter(p => p.id !== pol.id);
+        await save({ ...settings, cookiePolicies: [...others, pol] });
+    };
+
+    const removeCookie = async (id: string) =>
+        save({ ...settings, cookiePolicies: settings.cookiePolicies.filter(p => p.id !== id) });
+
+    return [settings, ready, { setToken, setPassphrase, upsertPolicy, removePolicy, upsertCookie, removeCookie }];
 }

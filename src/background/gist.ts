@@ -1,3 +1,4 @@
+import type { Settings } from "@/modules/types";
 import browser from "webextension-polyfill";
 
 const API_ROOT = "https://api.github.com";
@@ -24,6 +25,7 @@ async function api<T>(
         }
     });
     if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+    if (opts.method === "HEAD") return res as unknown as T; // HEAD requests don't return JSON
     return res.json() as Promise<T>;
 }
 
@@ -37,10 +39,8 @@ export async function upsertGist(
     fileContent: string,
     filename = "crumbly.json"
 ): Promise<{ gistId: string; etag: string }> {
-    const { githubToken, gistId } = await browser.storage.local.get([
-        "githubToken",
-        "gistId"
-    ]);
+    const settings = await browser.storage.local.get("settings") as { settings: Settings };
+    const { githubToken, gistId } = settings.settings;
     if (!githubToken) throw new Error("Missing GitHub token.");
 
     // If we already created a gist before, patch it; otherwise create new
@@ -70,10 +70,10 @@ export async function upsertGist(
             files: { [filename]: { content: fileContent } }
         })
     });
-    await browser.storage.local.set({ gistId: created.id });
+    await browser.storage.local.set({ settings: { ...settings.settings, gistId: created.id } });
     const etag = (await api<Response>(`/gists/${created.id}`, {
         token: githubToken as any,
         method: "HEAD"
-    })).headers.get("etag")!;
+    }))?.headers?.get("etag") ?? "";
     return { gistId: created.id, etag };
 }
